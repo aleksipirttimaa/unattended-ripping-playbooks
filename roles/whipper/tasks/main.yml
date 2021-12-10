@@ -30,6 +30,7 @@
         mode: '0755'
         owner: '{{ whipper_user }}'
         group: '{{ whipper_group }}'
+  become: yes
 
 - name: Become whipper
   block:
