@@ -1,0 +1,21 @@
+- name: whipper group
+  ansible.builtin.group:
+    name: '{{ whipper_group }}'
+
+- name: Fetch nologin path
+  ansible.builtin.shell: which nologin
+  register: nologin_bin
+
+- name: whipper user
+  ansible.builtin.user:
+    name: '{{ whipper_user }}'
+    group: '{{ whipper_group }}'
+    shell: '{{ nologin_bin.stdout }}'
+    create_home: yes
+    groups: cdrom
+    append: yes
+  register: user
+
+- name: Export fact whipper_home
+  set_fact:
+    whipper_home: '{{ user.home }}'

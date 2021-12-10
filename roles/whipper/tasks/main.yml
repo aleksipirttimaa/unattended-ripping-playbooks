@@ -1,0 +1,92 @@
+- name: Whipper user is created
+  import_tasks: user.yml
+  become: yes
+  register: whipper_home
+
+- name: Dependencies are installed
+  import_tasks: dependencies.yml
+  become: yes
+
+- name: become root
+  block:
+    - name: Whipper working directory
+      ansible.builtin.file:
+        path: '{{ whipper_wd }}'
+        state: directory
+        mode: '0755'
+        owner: '{{ whipper_user }}'
+        group: '{{ whipper_group }}'
+    - name: Whipper virtualenv directory
+      ansible.builtin.file:
+        path: '{{ whipper_venv }}'
+        state: directory
+        mode: '0755'
+        owner: '{{ whipper_user }}'
+        group: '{{ whipper_group }}'
+    - name: Whipper new directory
+      ansible.builtin.file:
+        path: '{{ whipper_venv }}'
+        state: directory
+        mode: '0755'
+        owner: '{{ whipper_user }}'
+        group: '{{ whipper_group }}'
+
+- name: Become whipper
+  block:
+    - name: Checkout whipper from github
+      ansible.builtin.git:
+        repo: 'https://github.com/whipper-team/whipper.git'
+        dest: '{{ whipper_home }}/whipper'
+        version: v0.10.0
+    - name: Install pip requirements for whipper 
+      ansible.builtin.pip:
+        chdir: '{{ whipper_home }}/whipper'
+        requirements: requirements.txt
+        virtualenv: '{{ whipper_venv }}'
+    - name: Install whipper optional requirement Pillow
+      ansible.builtin.pip:
+        name: Pillow
+        virtualenv: '{{ whipper_venv }}'
+    - name: Install whipper
+      ansible.builtin.pip:
+        chdir: '{{ whipper_home }}/whipper'
+        name: '.'
+        extra_args: '-e'
+        virtualenv: '{{ whipper_venv }}'
+    - name: Whipper config directory
+      ansible.builtin.file:
+        path: '{{ whipper_home }}/.config/whipper'
+        state: directory
+        mode: '0755'
+    - name: Whipper plugins directory
+      ansible.builtin.file:
+        path: '{{ whipper_home }}/.local/share/whipper/plugins'
+        state: directory
+        mode: '0755'
+    - name: Configure whipper
+      ansible.builtin.template:
+        src: whipper.config.j2
+        dest: '{{ whipper_home }}/.config/whipper/whipper.conf'
+        force: no
+    - name: Checkout whipper-plugin-eaclogger from github
+      ansible.builtin.git:
+        repo: 'https://github.com/whipper-team/whipper-plugin-eaclogger.git'
+        dest: '{{ whipper_home }}/eaclogger'
+        version: v0.5.0
+    - name: Build whipper-plugin-eaclogger
+      ansible.builtin.shell:
+        chdir: '{{ whipper_home }}/eaclogger'
+        cmd: '{{ whipper_venv }}/bin/python setup.py bdist_egg'
+    - name: Find eaclogger distributables
+      ansible.builtin.find:
+        paths: '{{ whipper_home }}/eaclogger/dist/'
+        patterns: 'whipper_plugin_eaclogger*.egg'
+      register: eaclogger_eggs
+    - name: Install eaclogger
+      ansible.builtin.copy:
+        src: '{{ item.path }}'
+        dest: '{{ whipper_home }}/.local/share/whipper/plugins'
+        remote_src: yes
+      with_items: '{{ eaclogger_eggs.files }}'
+  become: yes
+  become_user: '{{ whipper_user }}'

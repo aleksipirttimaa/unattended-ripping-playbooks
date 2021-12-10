@@ -1,0 +1,22 @@
+[Unit]
+Description=Unattended ripping on /dev/%i
+
+[Service]
+User={{ whipper_user }}
+WorkingDirectory={{ whipper_wd }}
+ExecStart={{ whipper_venv }}/bin/python {{ whipperwrapper_src }}/whipperwrapper/main.py \
+  --drive /dev/%i \
+  --log_dir '{{ whipper_wd }}/log' \
+  --new_dir '{{ whipper_wd }}/new' \
+  --failed_dir '{{ whipper_wd }}/failed' \
+  --done_dir '{{ whipper_wd }}/done' \
+  --venv_dir '{{ whipper_venv }}'
+
+Restart=always
+RestartSec=2s
+
+PrivateTmp=yes
+ProtectSystem=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,66 @@
+- name: become root
+  block:
+  - name: Whipperwrapper working directory
+    ansible.builtin.file:
+      path: '{{ whipper_wd }}'
+      state: directory
+      mode: '0755'
+      owner: '{{ whipper_user }}'
+      group: '{{ whipper_group }}'
+  - name: Whipperwrapper install directory
+    ansible.builtin.file:
+      path: '{{ whipperwrapper_src }}'
+      state: directory
+      mode: '0755'
+      owner: '{{ whipper_user }}'
+      group: '{{ whipper_group }}'
+  - name: Whipperwrapper log directory
+    ansible.builtin.file:
+      path: '{{ whipper_wd }}/log'
+      state: directory
+      mode: '0755'
+      owner: '{{ whipper_user }}'
+      group: '{{ whipper_group }}'
+  - name: Whipperwrapper new directory
+    ansible.builtin.file:
+      path: '{{ whipper_wd }}/new'
+      state: directory
+      mode: '0755'
+      owner: '{{ whipper_user }}'
+      group: '{{ whipper_group }}'
+  - name: Whipperwrapper failed directory
+    ansible.builtin.file:
+      path: '{{ whipper_wd }}/failed'
+      state: directory
+      mode: '0755'
+      owner: '{{ whipper_user }}'
+      group: '{{ whipper_group }}'
+  - name: Whipperwrapper done directory
+    ansible.builtin.file:
+      path: '{{ whipper_wd }}/done'
+      state: directory
+      mode: '0755'
+      owner: '{{ whipper_user }}'
+      group: '{{ whipper_group }}'
+  - name: Install whipperwrapper@.service
+    ansible.builtin.template:
+      src: whipperwrapper@.service.j2
+      dest: /etc/systemd/system/whipperwrapper@.service
+    register: servicefile
+  - name: Reload system daemon
+    ansible.builtin.systemd:
+      daemon_reload: yes
+    when: servicefile.changed
+
+- name: Become whipper
+  block:
+  - name: Install whipperwrapper requirement requests
+    ansible.builtin.pip:
+      name: requests
+      virtualenv: '{{ whipper_venv }}'
+  - name: Copy whipperwrapper
+    ansible.builtin.copy:
+      src: 'whipperwrapper'
+      dest: '{{ whipperwrapper_src }}'
+      owner: '{{ whipper_user }}'
+      group: '{{ whipper_group }}'

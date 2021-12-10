@@ -1,0 +1,15 @@
+[main]
+
+[musicbrainz]
+
+[whipper.cd.rip]
+unknown = False
+cdr = False
+
+logger = eac
+max_retries = 3
+
+working_directory = {{ whipper_wd }}/new
+
+track_template = %%A - %%d - %%y/CD%%N/%%t - %%a - %%n
+disc_template = %%A - %%d - %%y/CD%%N/%%A - %%d - %%y

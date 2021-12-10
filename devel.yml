@@ -1,0 +1,13 @@
+---
+- hosts:
+    - devel
+  roles:
+    - role: whipper
+      vars:
+        - whipper_user: 'whipper'
+        - whipper_group: 'whipper'
+        - whipper_wd: '/var/local/whipper'
+        - whipper_venv: '/var/local/whipper/venv'
+    - role: whipperwrapper
+      vars:
+        - whipperwrapper_src: '/var/local/whipper/src'
