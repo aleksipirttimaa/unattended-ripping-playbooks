@@ -109,7 +109,7 @@ class UnattendedSession():
                 "user_progress": self.user_progress,
             }
             try:
-                res = requests.post(path.join(self._http_endpoint, self._id),
+                res = requests.post(self._http_endpoint + self._id,
                     json=body, auth=self._http_auth, timeout=10)
             except (requests.exceptions.ConnectionError,
                 requests.exceptions.Timeout) as err:
@@ -118,6 +118,7 @@ class UnattendedSession():
                 self._logger.exception(err, extra=self.extra())
                 return
             self.info(f"Session server replied with HTTP {res.status_code}")
+            self.debug(res.text)
         else:
             self.debug("Update won't be posted, no HTTP endpoint")
 
