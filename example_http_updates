@@ -1,6 +1,6 @@
 POST /update/20211206-0427-c1fc415e
 
-{"hostname": "localhost", "drive": "/dev/sr0", "stage": "unknown", "failed": "", "mb_disc_id": "", "mb_lookup_url": "", "user_progress": ""}
-{"hostname": "localhost", "drive": "/dev/sr0", "stage": "reading_toc", "failed": "", "mb_disc_id": "", "mb_lookup_url": "", "user_progress": "Identifying release.."}
-{"hostname": "localhost", "drive": "/dev/sr0", "stage": "ripping", "failed": "", "mb_disc_id": "XzPS7vW.HPHsYemQh0HBUGr8vuU-", "mb_lookup_url": "https://example.test/", "user_progress": "Ripped 24 of 64 tracks."}
-{"hostname": "localhost", "drive": "/dev/sr0", "stage": "ripping", "failed": "Unknown track count", "mb_disc_id": "XzPS7vW.HPHsYemQh0HBUGr8vuU-", "mb_lookup_url": "https://example.test/", "user_progress": "Ripped 64 of 64 tracks."}
+{"hostname": "localhost", "drive_path": "/dev/sr0", "stage": "unknown", "failed": "", "mb_disc_id": "", "mb_lookup_url": "", "user_progress": ""}
+{"hostname": "localhost", "drive_path": "/dev/sr0", "stage": "reading_toc", "failed": "", "mb_disc_id": "", "mb_lookup_url": "", "user_progress": "Identifying release.."}
+{"hostname": "localhost", "drive_path": "/dev/sr0", "stage": "ripping", "failed": "", "mb_disc_id": "XzPS7vW.HPHsYemQh0HBUGr8vuU-", "mb_lookup_url": "https://example.test/", "user_progress": "Ripped 24 of 64 tracks."}
+{"hostname": "localhost", "drive_path": "/dev/sr0", "stage": "ripping", "failed": "Unknown track count", "mb_disc_id": "XzPS7vW.HPHsYemQh0HBUGr8vuU-", "mb_lookup_url": "https://example.test/", "user_progress": "Ripped 64 of 64 tracks."}
