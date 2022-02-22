@@ -103,7 +103,7 @@ Running this will add `defeats_cache = True` to your drive's config, if applicab
 In this project the following file name templates are used:
 
 ```sh
-cat ~/.config/whipper/whipper.conf <<EOF
+cat <<EOF > ~/.config/whipper/whipper.conf
 [whipper.cd.rip]
 track_template = %%A - %%d - %%y/CD%%N/%%t - %%a - %%n
 disc_template = %%A - %%d - %%y/CD%%N/%%A - %%d - %%y
@@ -155,7 +155,7 @@ eaclogger is a plugin that enables whipper to output EAC-like log output. It is 
 The output is saved as a file to the expected location.
 
 ```sh
-cat ~/.config/whipper/whipper.conf <<EOF
+cat <<EOF > ~/.config/whipper/whipper.conf
 [whipper.cd.rip]
 logger = eac
 EOF
