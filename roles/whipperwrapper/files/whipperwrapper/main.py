@@ -66,13 +66,19 @@ if __name__ == "__main__":
                     "-W", session.new_path], # working directory
                 encoding="utf-8", stdout=sb.PIPE, stderr=sb.STDOUT)
 
-            # FIXME: why no realtime output?
-            # maybe logging isn't being flushed?
-            # maybe whipper isn't flushing?
-            # I swear this was just working
-            for line in wr.stdout.readlines():
+            while True:
+                if wr.poll() != None:
+                    # TODO: jank
+                    # whipper has terminated
+                    break
+
+                line = wr.stdout.readline()
+                if not line:
+                    # whipper has terminated
+                    break
+
                 line = line.rstrip("\n")
-                session.info("whipper: " + line)
+                session.info(f"whipper: {line}")
                 session.whipper_lines.append(line)
                 wrapper.parse(line, session)
 
