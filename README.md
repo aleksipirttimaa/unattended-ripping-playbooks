@@ -76,7 +76,7 @@ This process requires a well-known (by AccurateRIP) CD inserted.
 Source the whipper venv:
 
 ```sh
-sudo su -u whipper bash
+sudo -u whipper bash
 . /var/local/whipper/venv/bin/activate
 ```
 
