@@ -33,4 +33,4 @@ class ClosedTray():
     def __exit__(self, _exc_type, _exc_value, _exc_traceback):
         """Always open tray"""
         if status(self.drive_path) != CDS_TRAY_OPEN:
-            sb.run(["eject", self.drive_path], check=True)
+            sb.run(["eject", self.drive_path], check=False)

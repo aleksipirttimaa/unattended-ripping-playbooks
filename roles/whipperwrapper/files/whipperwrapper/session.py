@@ -14,7 +14,8 @@ READING_TOC = "reading_toc"
 RIPPING = "ripping"
 UPLOADING = "uploading"
 
-STDOUT_FORMAT = "%(_id)s: %(levelname)s %(message)s"
+#STDOUT_FORMAT = "%(_id)s: %(levelname)s %(message)s"
+STDOUT_FORMAT = "%(levelname)s %(message)s"
 
 #LOG_FORMAT = "%(asctime)s %(_id)s: %(levelname)s %(message)s"
 LOG_FORMAT = "%(asctime)s: %(levelname)s %(message)s"
@@ -72,6 +73,14 @@ class UnattendedSession():
         self.mb_disc_id = ""
         # If MB doesn't match TOC, user should follow this URL
         self.mb_lookup_url = ""
+        # a disc id may relate to multiple releases
+        self.mb_releases = []
+
+        # UI info
+        self.album = ""
+        self.albumartist = ""
+
+        self._exit = False
 
     def __enter__(self):
         self._logger.info(f"Using drive {self.drive} on {socket.gethostname()}", extra=self.extra())
@@ -86,6 +95,9 @@ class UnattendedSession():
     def enter_stage(self, stage):
         self._stage = stage
         self.debug(f"Entering stage {stage}.")
+
+    def in_stage(self, stage):
+        self._stage == stage
 
     def fail(self, reason: str):
         self._failed = reason
@@ -108,7 +120,11 @@ class UnattendedSession():
                 "failed": self._failed,
                 "mb_disc_id": self.mb_disc_id,
                 "mb_lookup_url": self.mb_lookup_url,
+                "mb_releases": "\n".join(self.mb_releases),
                 "user_progress": self.user_progress,
+                "album": self.album,
+                "albumartist": self.albumartist,
+                "whipper_exited": self._exit,
             }
             try:
                 res = requests.post(self._http_endpoint + self._id,
@@ -128,10 +144,11 @@ class UnattendedSession():
         return self._failed != ""
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
+        self._exit = True
         if exc_type is None:
             self.debug("Session ended cleanly")
         else:
             if self._failed == "":
                 self._failed = "Unexpected exception"
-                self.post()
             self._logger.exception(exc_traceback, extra=self.extra())
+        self.post()

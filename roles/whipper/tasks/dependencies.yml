@@ -1,72 +1,23 @@
-- name: Package cd-paranoia is installed
+- name: Packages are present
   ansible.builtin.package:
-    name: cd-paranoia
+    name: "{{ item }}"
     state: present
+  with_items:
+    - cd-paranoia
+    - cdrdao
+    - libiso9660-dev
+    - libgirepository1.0-dev
+    - libsndfile1-dev
+    - flac
+    - sox
+    - swig
+    - git
+    - libcairo2-dev
+    - libdiscid-dev
+    - build-essential
+    - python3
+    - python3-pip
 
-- name: Package cdrdao is installed
-  ansible.builtin.package:
-    name: cdrdao
-    state: present
-
-- name: Package libiso9660-dev is installed
-  ansible.builtin.package:
-    name: libiso9660-dev
-    state: present
-
-- name: Package libgirepository1.0-dev is installed
-  ansible.builtin.package:
-    name: libgirepository1.0-dev
-    state: present
-
-- name: Package libsndfile1-dev is installed
-  ansible.builtin.package:
-    name: libsndfile1-dev
-    state: present
-
-- name: Package flac is installed
-  ansible.builtin.package:
-    name: flac
-    state: present
-
-- name: Package sox is installed
-  ansible.builtin.package:
-    name: sox
-    state: present
-
-- name: Package swig is installed
-  ansible.builtin.package:
-    name: swig
-    state: present
-
-- name: Package git is installed
-  ansible.builtin.package:
-    name: git
-    state: present
-
-- name: Package libcairo2-dev is installed
-  ansible.builtin.package:
-    name: libcairo2-dev
-    state: present
-
-- name: Package libdiscid-dev is installed
-  ansible.builtin.package:
-    name: libdiscid-dev
-    state: present
-
-- name: Package build-essential is installed
-  ansible.builtin.package:
-    name: build-essential
-    state: present
-
-- name: Package python3 is installed
-  ansible.builtin.package:
-    name: python3
-    state: present
-
-- name: Package python3-pip is installed
-  ansible.builtin.package:
-    name: python3-pip
-    state: present
 
 - name: Virtualenv is installed with pip
   ansible.builtin.pip:

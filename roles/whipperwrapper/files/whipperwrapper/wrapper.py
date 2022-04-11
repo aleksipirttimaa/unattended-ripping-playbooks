@@ -20,9 +20,10 @@ def search_first_matching_line(r, lines, group=None):
 def parse(line, session):
     """Call to parse individual line, mutating session"""
     if re.match(r"^Reading TOC\W+0\W+%", line):
-        session.enter_stage(READING_TOC)
-        session.user_progress = "Identifying release.."
-        session.post()
+        if not session.in_stage(READING_TOC):
+            session.enter_stage(READING_TOC)
+            session.user_progress = "Identifying release.."
+            session.post()
         return
 
     search_disc_id = re.search(r"^MusicBrainz disc id (.*)$", line)
@@ -33,11 +34,35 @@ def parse(line, session):
     search_lookup_url = re.search(r"^MusicBrainz lookup URL ([^ ]*)", line)
     if search_lookup_url:
         session.mb_lookup_url = search_lookup_url.group(1)
-        return
+        session.debug(f"Found mb_lookup_url {session.mb_lookup_url}")
+        #return
 
-    if re.match(r"Matching releases:", line):
-        session.enter_stage(RIPPING)
-        session.post()
+    if session.album == "":
+        # whipper selects the first matching release
+        search_album = re.search(r"^Title *: (.*)", line)
+        if search_album:
+            session.album = search_album.group(1)
+            session.debug(f"Found album {session.album}")
+        #return
+
+    if session.albumartist == "":
+        search_albumartist = re.search(r"^Artist *: (.*)", line)
+        if search_albumartist:
+            session.albumartist = search_albumartist.group(1)
+            session.debug(f"Found albumartist {session.albumartist}")
+        #return
+
+    search_release_id = re.search(r"^Release *: ([a-z0-9-]{36})$", line)
+    if search_release_id:
+        release_id = search_release_id.group(1)
+        session.mb_releases.append(release_id)
+        session.debug(f"Found release_id {release_id}")
+
+    if re.match(r"^Reading table\W+0\W+%", line):
+        if not session.in_stage(RIPPING):
+            session.enter_stage(RIPPING)
+            session.user_progress = "Reading table.."
+            session.post()
         return
 
     search_verifying_track = re.search(r"^Verifying track ([0-9]+) of ([0-9]+)", line)
