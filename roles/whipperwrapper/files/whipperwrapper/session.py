@@ -15,8 +15,9 @@ RIPPING = "ripping"
 UPLOADING = "uploading"
 
 STDOUT_FORMAT = "%(_id)s: %(levelname)s %(message)s"
-LOG_FORMAT = "%(asctime)s %(_id)s: %(levelname)s %(message)s"
-LOG_FORMAT = "%(asctime)s %(levelname)s %(message)s"
+
+#LOG_FORMAT = "%(asctime)s %(_id)s: %(levelname)s %(message)s"
+LOG_FORMAT = "%(asctime)s: %(levelname)s %(message)s"
 
 def session_id() -> str:
     return datetime.datetime.now().strftime("%Y%m%d-%H%M") \
