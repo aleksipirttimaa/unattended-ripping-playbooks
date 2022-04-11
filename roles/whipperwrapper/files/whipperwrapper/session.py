@@ -14,29 +14,29 @@ READING_TOC = "reading_toc"
 RIPPING = "ripping"
 UPLOADING = "uploading"
 
-#STDOUT_FORMAT = "%(_id)s: %(levelname)s %(message)s"
+#STDOUT_FORMAT = "%(slug)s: %(levelname)s %(message)s"
 STDOUT_FORMAT = "%(levelname)s %(message)s"
 
-#LOG_FORMAT = "%(asctime)s %(_id)s: %(levelname)s %(message)s"
+#LOG_FORMAT = "%(asctime)s %(slug)s: %(levelname)s %(message)s"
 LOG_FORMAT = "%(asctime)s: %(levelname)s %(message)s"
 
-def session_id() -> str:
+def session_slug() -> str:
     return datetime.datetime.now().strftime("%Y%m%d-%H%M") \
         + "-" + str(uuid.uuid4()).split("-", maxsplit=1)[0]
 
 class UnattendedSession():
     def __init__(self, args):
-        self._id = session_id()
+        self._slug = session_slug()
 
         self.drive = args.drive
 
         # paths
         self._log_fn = None
         if args.log_dir:
-            self._log_fn = path.abspath(path.join(args.log_dir, self._id + ".log"))
-        self.new_path = path.abspath(path.join(args.new_dir, self._id))
-        self.failed_path = path.abspath(path.join(args.failed_dir, self._id))
-        self.done_path = path.abspath(path.join(args.done_dir, self._id))
+            self._log_fn = path.abspath(path.join(args.log_dir, self._slug + ".log"))
+        self.new_path = path.abspath(path.join(args.new_dir, self._slug))
+        self.failed_path = path.abspath(path.join(args.failed_dir, self._slug))
+        self.done_path = path.abspath(path.join(args.done_dir, self._slug))
 
         # logger
         self._logger = logging.getLogger()
@@ -88,7 +88,7 @@ class UnattendedSession():
 
     def extra(self):
         return {
-            "_id": self._id,
+            "slug": self._slug,
             "drive": self.drive,
         }
 
@@ -127,7 +127,7 @@ class UnattendedSession():
                 "whipper_exited": self._exit,
             }
             try:
-                res = requests.post(self._http_endpoint + self._id,
+                res = requests.post(self._http_endpoint + self._slug,
                     json=body, auth=self._http_auth, timeout=10)
             except (requests.exceptions.ConnectionError,
                 requests.exceptions.Timeout) as err:

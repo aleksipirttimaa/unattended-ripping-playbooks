@@ -1,12 +1,12 @@
 import unittest
 
 class TestHelpers(unittest.TestCase):
-    def test_session_id(self):
-        from session import session_id
+    def test_session_slug(self):
+        from session import session_slug
 
-        _id = session_id()
-        self.assertIsInstance(_id, str)
-        self.assertNotEqual(len(_id), 0)
+        slug = session_slug()
+        self.assertIsInstance(slug, str)
+        self.assertNotEqual(len(slug), 0)
 
     def test_any_line_mathces(self):
         from wrapper import any_line_matches

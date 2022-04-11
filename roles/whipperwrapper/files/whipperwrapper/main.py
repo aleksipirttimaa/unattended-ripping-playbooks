@@ -89,11 +89,11 @@ if __name__ == "__main__":
             wrapper.parse_all(wr.returncode, session)
 
             if session.failed():
-                # move results from new/{_id} to failed/{_id}
+                # move results from new/{slug} to failed/{slug}
                 os.rename(session.new_path, session.failed_path)
                 session.user_progress = "Couldn't rip."
             else:
-                # move results from new/{_id} to done/{_id}
+                # move results from new/{slug} to done/{slug}
                 os.rename(session.new_path, session.done_path)
                 # TODO: .log already contains some drive info
                 # but it'd be good to be able to link sessions with

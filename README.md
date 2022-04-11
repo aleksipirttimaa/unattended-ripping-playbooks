@@ -9,7 +9,7 @@ Whipper: https://github.com/whipper-team/whipper
 2. Fork Whipper
 3. Follow the status of the process (Consume logs, post updates over HTTP)
 4. Ensure a good result
-5. Move files to `done/{session_id}` for later storage
+5. Move files to `done/{session_slug}` for later storage
 6. Open tray
 7. (repeat)
 
@@ -127,10 +127,10 @@ Whipperwrapper can provide updates of it's status over HTTP.
 Only a one kind of HTTP request is produced. Use `session.py` for reference, some examples are included in `example_http_updates`
 
 ```text
-POST {endpoint_path}/{session_id}
+POST {endpoint_path}/{session_slug}
 ```
 
-It is assumed that the locally generated `session_id` is unique.
+It is assumed that the locally generated `session_slug` is unique.
 
 ### Enabling updates
 
