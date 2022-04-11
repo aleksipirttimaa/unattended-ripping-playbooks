@@ -57,13 +57,12 @@ def parse_all(returncode, session):
         session.fail(reason="Submit this disc to MusicBrainz.")
         return
 
-    # FIXME: ensure accurate rip
-    #ar_all_accurate = False
-    #if any_line_matches(r"rip accurate", session.whipper_lines):
-    #    ar_all_accurate = True
-    #
-    #if any_line_matches(r"rip NOT accurate", session.whipper_lines):
-    #    ar_all_accurate = False
+    ar_all_accurate = False
+    if any_line_matches(r"rip accurate", session.whipper_lines):
+        ar_all_accurate = True
+
+    if any_line_matches(r"rip NOT accurate", session.whipper_lines):
+        ar_all_accurate = False
 
     n_tracks = search_first_matching_line(
         r"^Disc duration: [0-9:.]+, ([0-9]+) audio tracks$",
@@ -80,10 +79,9 @@ def parse_all(returncode, session):
         session.fail(reason="No tracks")
         return
 
-    # FIXME
-    #if not ar_all_accurate:
-    #    session.fail(reason="Inaccurate rip. (see whipper output for details)")
-    #    return
+    if not ar_all_accurate:
+        session.fail(reason="Inaccurate rip. (couldn't verify with AccurateRip, this disc may be worn)")
+        return
 
     if returncode != 0:
         session.fail(reason=f"whipper failed with unknown error code {returncode}")
