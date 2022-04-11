@@ -12,8 +12,8 @@ class TestHelpers(unittest.TestCase):
         from wrapper import any_line_matches
 
         lines = ["hello", "world\n"]
-        self.assertFalse(any_line_matches("hell0", lines))
-        self.assertTrue(any_line_matches("world", lines))
+        self.assertFalse(any_line_matches(r"hell0", lines))
+        self.assertTrue(any_line_matches(r"world", lines))
 
     def test_search_first_matching_line(self):
         from wrapper import search_first_matching_line
@@ -22,6 +22,23 @@ class TestHelpers(unittest.TestCase):
             "Arched over me a dismal gloom"]
         select = search_first_matching_line(r"(\w*oom)$", lines, group=1)
         self.assertEqual(select, "gloom")
+
+"""
+class TestWrapper(unittest.TestCase):
+    def test_ar_accurate(self):
+        from wrapper import parse_all
+
+        with open("testasset.log", "r") as file:
+            class MockSession():
+                whipper_lines = file.readlines()
+                def debug(self, *args):
+                    print("debug: ", *args)
+                def fail(self, *args, reason):
+
+                    print("fail: ", reason)
+            parse_all(0, MockSession())
+"""
+
 
 """
 # TODO test Wrapper with mock Session

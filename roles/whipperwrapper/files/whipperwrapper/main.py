@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     assert_command("eject")
 
-    # Wait for a closed tray and open it at the end
+    # Wait for a closed tray (that has a disc) and open it at the end
     with ClosedTray(args.drive):
         # UnattendedSession is state of this ripping session
         with UnattendedSession(args) as session:

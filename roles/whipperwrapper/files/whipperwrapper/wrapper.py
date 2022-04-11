@@ -4,7 +4,7 @@ from session import READING_TOC, RIPPING
 
 def any_line_matches(r, lines):
     for line in lines:
-        if re.match(r, line):
+        if re.search(r, line):
             return True
     return False
 
