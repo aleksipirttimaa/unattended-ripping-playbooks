@@ -100,4 +100,3 @@ if __name__ == "__main__":
                 # disc_upload contents
                 session.enter_stage(UPLOADING)
                 session.user_progress = "Ripping succeeded."
-            session.post()
