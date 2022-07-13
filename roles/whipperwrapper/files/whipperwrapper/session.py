@@ -99,7 +99,7 @@ class UnattendedSession():
         self.debug(f"Entering stage {stage}.")
 
     def in_stage(self, stage):
-        self._stage == stage
+        return self._stage == stage
 
     def fail(self, reason: str):
         self._failed = reason
