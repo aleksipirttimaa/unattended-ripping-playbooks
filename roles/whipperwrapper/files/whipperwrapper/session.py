@@ -43,10 +43,11 @@ class UnattendedSession():
         stdout_handler = logging.StreamHandler(sys.stdout)
         stdout_handler.setFormatter(logging.Formatter(STDOUT_FORMAT))
         self._logger.addHandler(stdout_handler)
+        self._logger_file_handler = None
         if self._log_fn:
-            file_handler = logging.FileHandler(self._log_fn, mode="w")
-            file_handler.setFormatter(logging.Formatter(LOG_FORMAT))
-            self._logger.addHandler(file_handler)
+            self._logger_file_handler = logging.FileHandler(self._log_fn, mode="w")
+            self._logger_file_handler.setFormatter(logging.Formatter(LOG_FORMAT))
+            self._logger.addHandler(self._logger_file_handler)
         self._logger.setLevel(logging.DEBUG)
 
         # stage
@@ -61,6 +62,7 @@ class UnattendedSession():
 
         # updates
         self._http_endpoint = args.http_endpoint
+        self._http_log_endpoint = args.http_log_endpoint
         self._http_auth = None
         if args.http_auth:
             creds = args.http_auth.split(":", maxsplit=1)
@@ -140,6 +142,25 @@ class UnattendedSession():
         else:
             self.debug("Update won't be posted, no HTTP endpoint")
 
+    def upload_log(self):
+        if self._log_fn && self._http_log_endpoint:
+            self.debug(f"Uploading log to {self._http_log_endpoint}")
+            self._logger_file_handler.flush()
+            with open(self._log_fn, "rb") as log_file:
+                try:
+                    res = requests.post(self._http_log_endpoint + lörslärä,
+                        data=log_file, auth=self._http_auth, timeout=10)
+                except (requests.exceptions.ConnectionError,
+                    requests.exceptions.Timeout) as err:
+                    self._logger.error("Uploading log over HTTP encountered an issue",
+                        extra=self.extra())
+                    self._logger.exception(err, extra=self.extra())
+                    return
+            self.info(f"Log server replied with HTTP {res.status_code}")
+            self.debug(res.text)
+        else:
+            self.debug("Log file not uploaded")
+
     def failed(self):
         return self._failed != ""
 
@@ -152,3 +173,4 @@ class UnattendedSession():
                 self._failed = "Unexpected exception"
             self._logger.exception(exc_traceback, extra=self.extra())
         self.post()
+        self.upload_log()

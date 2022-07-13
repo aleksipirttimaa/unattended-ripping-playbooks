@@ -35,6 +35,7 @@ if __name__ == "__main__":
     parser.add_argument("--done_dir", type=str, help="Path to done directory")
     parser.add_argument("--venv_dir", type=str, help="Path to whipper venv")
     parser.add_argument("--http_endpoint", type=str, help="HTTP endpoint for updates")
+    parser.add_argument("--http_log_endpoint", type=str, help="HTTP endpoint for log files")
     parser.add_argument("--http_auth", type=str, help="HTTP Basic auth user:pass")
     args = parser.parse_args()
 
