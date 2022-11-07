@@ -86,7 +86,7 @@ and find the offset for your drive `sr0`:
 whipper offset find -d /dev/sr0
 ```
 
-This works by iterating through a preterminated set of offsets, until one is found, that produces correct results.
+This works by iterating through a predetermined set of offsets, until one is found, that produces correct results.
 
 ### Analyze
 
@@ -117,7 +117,7 @@ If you ran the playbook, this was done automatically.
 Enable and start the systemd unit:
 
 ```sh
-systemd enable --now whipperwrapper@sr0.service
+systemctl enable --now whipperwrapper@sr0.service
 ```
 
 ## HTTP updates
@@ -134,7 +134,7 @@ It is assumed that the locally generated `session_slug` is unique.
 
 ### Enabling updates
 
-Enable this functionality by setting command-line params `--http-endpoint` and `--http-auth`, in the systemd unit:
+Enable this functionality by setting command-line args `--http-endpoint` and `--http-auth`, in the systemd unit:
 
 ```sh
 systemctl edit --full whipperwrapper@.service
@@ -152,7 +152,7 @@ https://github.com/whipper-team/whipper-plugin-eaclogger
 
 eaclogger is a plugin that enables whipper to output EAC-like log output. It is also included in the playbook.
 
-The output is saved as a file to the expected location.
+The output is saved as a file to a compatible location.
 
 ```sh
 cat <<EOF > ~/.config/whipper/whipper.conf
