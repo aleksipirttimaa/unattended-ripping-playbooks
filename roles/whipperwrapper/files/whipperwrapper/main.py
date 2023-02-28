@@ -40,8 +40,9 @@ if __name__ == "__main__":
     parser.add_argument("--rsync_dest", type=str, help="enable rsync and specify DEST")
     parser.add_argument("--rsync_bwlimit", type=str, help="set rsync --bwlimit=KBPS")
     parser.add_argument("--rsync_e", type=str, help="set rsync -e")
-    parser.add_argument("--rsync_log-file", type=str, help="set rsync --log-file")
-    parser.add_argument("--rsync_temp-dir", type=str, help="set rsync --temp-dir")
+    parser.add_argument("--rsync_log-file", type=str, help="set rsync --log-file=FILE")
+    parser.add_argument("--rsync_partial-dir", type=str,
+        help="enable rsync --delay-updates and set --partial-dir=DIR")
     args = parser.parse_args()
 
     if not os.path.exists(args.drive):
@@ -118,7 +119,7 @@ if __name__ == "__main__":
                     session.user_progress = "Uploading files.."
                     session.post()
 
-                    rs_args = ["rsync", "--verbose", "--archive", "--safe-links", "--delay-updates"]
+                    rs_args = ["rsync", "--verbose", "--archive", "--safe-links"]
 
                     if args.rsync_bwlimit:
                         bwlimit = args.rsync_bwlimit
@@ -132,9 +133,10 @@ if __name__ == "__main__":
                         log_file = args.rsync_log_file
                         rs_args.append(f"--log-file={log_file}")
 
-                    if args.rsync_tmp_dir:
-                        tmp_dir = args.rsync_tmp_dir
-                        rs_args.append(f"--tmp-dir={tmp_dir}")
+                    if args.rsync_partial_dir:
+                        partial_dir = args.rsync_partial_dir
+                        rs_args.append(f"--partial-dir={partial_dir}")
+                        rs_args.append(f"--delay-updates")
 
                     rs_args.append(session.done_path)
 

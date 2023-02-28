@@ -160,7 +160,7 @@ ExecStart= ... \
   --rsync_bwlimit "4096" \
   --rsync_e "ssh -i ~/.ssh/id_ed25519" \
   --rsync_log-file "rlog" \
-  --rsync_temp-dir "~/temp_dir"
+  --rsync_partial-dir "~/partial_dir"
 ```
 
 The remaining arguments are optional.
