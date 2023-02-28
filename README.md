@@ -146,6 +146,25 @@ ExecStart= ... \
   --http_auth "user:pass"  # optional
 ```
 
+### Enabling rsync
+
+Enable this functionality by setting command-line params `--rsync-dest` in the systemd unit:
+
+```sh
+systemctl edit --full whipperwrapper@.service
+```
+
+```text
+ExecStart= ... \
+  --rsync_dest "user@server:dir" \
+  --rsync_bwlimit "4096" \
+  --rsync_e "ssh -i ~/.ssh/id_ed25519" \
+  --rsync_log-file "rlog" \
+  --rsync_temp-dir "~/temp_dir"
+```
+
+The remaining arguments are optional.
+
 # whipper-plugin-eaclogger
 
 https://github.com/whipper-team/whipper-plugin-eaclogger

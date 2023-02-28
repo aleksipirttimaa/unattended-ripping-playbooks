@@ -6,7 +6,7 @@ import subprocess as sb
 from shutil import which
 
 from drive import ClosedTray
-from session import UnattendedSession, FORKING_WHIPPER, UPLOADING
+from session import UnattendedSession, FORKING_WHIPPER, UPLOADING, UPLOADED
 import wrapper
 
 def assert_dir(fn):
@@ -37,6 +37,11 @@ if __name__ == "__main__":
     parser.add_argument("--http_endpoint", type=str, help="HTTP endpoint for updates")
     parser.add_argument("--http_log_endpoint", type=str, help="HTTP endpoint for log files")
     parser.add_argument("--http_auth", type=str, help="HTTP Basic auth user:pass")
+    parser.add_argument("--rsync_dest", type=str, help="enable rsync and specify DEST")
+    parser.add_argument("--rsync_bwlimit", type=str, help="set rsync --bwlimit=KBPS")
+    parser.add_argument("--rsync_e", type=str, help="set rsync -e")
+    parser.add_argument("--rsync_log-file", type=str, help="set rsync --log-file")
+    parser.add_argument("--rsync_temp-dir", type=str, help="set rsync --temp-dir")
     args = parser.parse_args()
 
     if not os.path.exists(args.drive):
@@ -47,6 +52,9 @@ if __name__ == "__main__":
     assert_dir(args.done_dir)
 
     assert_command("eject")
+
+    if args.rsync_dest:
+        assert_command("rsync")
 
     # Wait for a closed tray (that has a disc) and open it at the end
     with ClosedTray(args.drive):
@@ -96,8 +104,51 @@ if __name__ == "__main__":
             else:
                 # move results from new/{slug} to done/{slug}
                 os.rename(session.new_path, session.done_path)
+
                 # TODO: .log already contains some drive info
                 # but it'd be good to be able to link sessions with
                 # disc_upload contents
+
                 session.enter_stage(UPLOADING)
-                session.user_progress = "Ripping succeeded."
+
+                if not args.rsync_dest:
+                    session.user_progress = "Ripping succeeded."
+
+                else:
+                    session.user_progress = "Uploading files.."
+                    session.post()
+
+                    rs_args = ["rsync", "--verbose", "--archive", "--safe-links", "--delay-updates"]
+
+                    if args.rsync_bwlimit:
+                        bwlimit = args.rsync_bwlimit
+                        rs_args.append(f"--bwlimit={bwlimit}")
+
+                    if args.rsync_e:
+                        rsh = args.rsync_e
+                        rs_args.append(f"-e={rsh}")
+
+                    if args.rsync_log_file:
+                        log_file = args.rsync_log_file
+                        rs_args.append(f"--log-file={log_file}")
+
+                    if args.rsync_tmp_dir:
+                        tmp_dir = args.rsync_tmp_dir
+                        rs_args.append(f"--tmp-dir={tmp_dir}")
+
+                    rs_args.append(session.done_path)
+
+                    rs_args.append(args.rsync_dest)
+
+                    rs_invokation = " ".join(rs_args)
+                    session.debug(f"Invoking rsync with: {rs_invokation}")
+
+
+
+                    rs = sb.Popen(rs_args, encoding="utf-8", stdout=sb.STDOUT, stderr=sb.STDOUT)
+                    rs.wait()
+                    session.info(f"rsync exited with code: {rs.returncode}")
+
+                    if rs.returncode == 0:
+                        session.user_progress = ""
+                        session.enter_stage(UPLOADED)

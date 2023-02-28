@@ -13,6 +13,7 @@ FORKING_WHIPPER = "forking_whipper"
 READING_TOC = "reading_toc"
 RIPPING = "ripping"
 UPLOADING = "uploading"
+UPLOADED = "uploaded"
 
 #STDOUT_FORMAT = "%(slug)s: %(levelname)s %(message)s"
 STDOUT_FORMAT = "%(levelname)s %(message)s"
@@ -143,7 +144,7 @@ class UnattendedSession():
             self.debug("Update won't be posted, no HTTP endpoint")
 
     def upload_log(self):
-        if self._log_fn && self._http_log_endpoint:
+        if self._log_fn and self._http_log_endpoint:
             self.debug(f"Uploading log to {self._http_log_endpoint}")
             self._logger_file_handler.flush()
             with open(self._log_fn, "rb") as log_file:
