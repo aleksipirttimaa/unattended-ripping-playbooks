@@ -149,7 +149,7 @@ class UnattendedSession():
             self._logger_file_handler.flush()
             with open(self._log_fn, "rb") as log_file:
                 try:
-                    res = requests.post(self._http_log_endpoint + lörslärä,
+                    res = requests.post(self._http_log_endpoint + self._slug,
                         data=log_file, auth=self._http_auth, timeout=10)
                 except (requests.exceptions.ConnectionError,
                     requests.exceptions.Timeout) as err:
