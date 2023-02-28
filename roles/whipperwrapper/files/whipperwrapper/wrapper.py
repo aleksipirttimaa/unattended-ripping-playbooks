@@ -86,11 +86,11 @@ def parse_all(returncode, session):
     ar_all_accurate = False
     if any_line_matches(r"rip accurate", session.whipper_lines):
         ar_all_accurate = True
-        session.debug(f"found 'rip accurate'")
+        session.debug("found 'rip accurate'")
 
     if any_line_matches(r"rip NOT accurate", session.whipper_lines):
         ar_all_accurate = False
-        session.debug(f"found 'rip NOT accurate'")
+        session.debug("found 'rip NOT accurate'")
 
     n_tracks = search_first_matching_line(
         r"^Disc duration: [0-9:.]+, ([0-9]+) audio tracks$",
