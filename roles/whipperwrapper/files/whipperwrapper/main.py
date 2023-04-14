@@ -147,7 +147,7 @@ if __name__ == "__main__":
 
 
 
-                    rs = sb.Popen(rs_args, encoding="utf-8", stdout=sb.STDOUT, stderr=sb.STDOUT)
+                    rs = sb.Popen(rs_args, encoding="utf-8")
                     rs.wait()
                     session.info(f"rsync exited with code: {rs.returncode}")
 
