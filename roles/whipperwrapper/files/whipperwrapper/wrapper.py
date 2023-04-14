@@ -83,6 +83,15 @@ def parse_all(returncode, session):
         session.fail(reason="Submit this disc to MusicBrainz.")
         return
 
+    # the user experience would improve, if these were enforced immediately, instead of after copy
+    if len(session.mb_releases) > 12:
+        session.fail("DiscID matches too many sessions. This disc can't be identified")
+        return
+
+    if False: # TODO
+        session.fail("DiscID matches too many albumartists. This disc can't be identified")
+        return
+
     ar_all_accurate = False
     if any_line_matches(r"rip accurate", session.whipper_lines):
         ar_all_accurate = True
@@ -107,8 +116,12 @@ def parse_all(returncode, session):
         session.fail(reason="No tracks")
         return
 
+    if any_line_matches(r"entry not found in AccurateRip database", session.whipper_lines):
+        session.fail(reason="This rip can't be verified as accurate (not found in AccurateRip database)")
+        return
+
     if not ar_all_accurate:
-        session.fail(reason="Inaccurate rip. (couldn't verify with AccurateRip, this disc may be worn)")
+        session.fail(reason="Inaccurate rip (couldn't verify with AccurateRip, this disc may be worn)")
         return
 
     if returncode != 0:
