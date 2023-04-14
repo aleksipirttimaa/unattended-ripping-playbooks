@@ -7,11 +7,13 @@ Whipper: https://github.com/whipper-team/whipper
 0. systemd (re)starts our unit
 1. Sleep until a disk is inserted
 2. Fork Whipper
-3. Follow the status of the process (Consume logs, post updates over HTTP)
+3. Follow the status of the process (Consume logs, optionally post updates over HTTP)
 4. Ensure a good result
 5. Move files to `done/{session_slug}` for later storage
-6. Open tray
-7. (repeat)
+6. Optionally, copy files to a safe location using `rsync`
+7. Optionally, Post log over HTTP
+8. Open tray
+9. (repeat)
 
 ```text
 /var/local/whipper
@@ -45,9 +47,9 @@ Whipper: https://github.com/whipper-team/whipper
     └──   [...]
 ```
 
-## Whipperwrapper
+## whipperwrapper
 
-Whipperwrapper wraps whipper and is the piece between a systemd unit and whipper. It waits for a disk, handles errors, ensures that the tray is opened at the end and provides real-time status updates over HTTP.
+whipperwrapper wraps whipper and is the piece between a systemd unit and whipper. It waits for a disk, handles errors, ensures that the tray is opened at the end and provides real-time status updates over HTTP.
 
 Source resides in `roles/whipperwrapper/files/whipperwrapper`.
 
@@ -165,7 +167,7 @@ ExecStart= ... \
 
 The remaining arguments are optional.
 
-# whipper-plugin-eaclogger
+# `whipper-plugin-eaclogger`
 
 https://github.com/whipper-team/whipper-plugin-eaclogger
 
@@ -179,3 +181,15 @@ cat <<EOF > ~/.config/whipper/whipper.conf
 logger = eac
 EOF
 ```
+
+# Ripping feature details
+
+Currently available features:
+
+- [x] whipper: EAC -compatible logs
+- [x] whipper: AccurateRip -verification
+
+Known limitations
+
+- [ ] whipper: CueTools DB verification (see https://github.com/whipper-team/whipper/issues/15)
+- [ ] whipper: Some drives don't work (see https://github.com/whipper-team/whipper/issues/234)
